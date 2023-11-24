@@ -1,0 +1,6 @@
+{
+  "cSpell.words": ["ahmedibra", "gofiber", "todos", "gorm", "godotenv", "joho"],
+  "prettier.printWidth": 100,
+  "prettier.tabWidth": 2,
+  "editor.defaultFormatter": "golang.go"
+}
