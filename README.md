@@ -21,7 +21,8 @@ git clone https://github.com/ahmedibra28/go-fiber-boilerplate
 
 Key folders:
 
-- `api/` - REST API controllers and routes
+- `controllers/` - REST API controllers
+- `routes/` - REST API and routes
 - `models/` - Database models and migration files 
 - `config/` - Configuration including database
 - `utils/` - Common helper functions
