@@ -26,11 +26,11 @@ func CreateUser(c *fiber.Ctx) error {
 	var user models.User
 
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(fiber.Map{"error": err})
 	}
 
 	if err := config.DB.Create(&user).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(user)
@@ -42,15 +42,15 @@ func UpdateUser(c *fiber.Ctx) error {
 	var user models.User
 
 	if err := config.DB.First(&user, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(fiber.Map{"error": err})
 	}
 
 	if err := config.DB.Save(&user).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(user)
@@ -63,11 +63,11 @@ func DeleteUser(c *fiber.Ctx) error {
 	var user models.User
 
 	if err := config.DB.First(&user, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	if err := config.DB.Delete(&user, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(user)

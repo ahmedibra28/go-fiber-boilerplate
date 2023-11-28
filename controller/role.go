@@ -8,13 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetRoles(c *fiber.Ctx) error {
-	var roles = []models.Role{}
-
-	config.DB.Find(&roles)
-	return c.JSON(roles)
-}
-
 func validate(role *models.Role) string {
 	if strings.TrimSpace(role.Name) == "" {
 		return "Name field is required"
@@ -22,11 +15,18 @@ func validate(role *models.Role) string {
 	return ""
 }
 
+func GetRoles(c *fiber.Ctx) error {
+	var roles = []models.Role{}
+
+	config.DB.Find(&roles)
+	return c.JSON(roles)
+}
+
 func CreateRole(c *fiber.Ctx) error {
 	var role models.Role
 
 	if err := c.BodyParser(&role); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(fiber.Map{"error": err})
 	}
 
 	validationError := validate(&role)
@@ -37,7 +37,7 @@ func CreateRole(c *fiber.Ctx) error {
 	}
 
 	if err := config.DB.Create(&role).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(role)
@@ -49,15 +49,15 @@ func UpdateRole(c *fiber.Ctx) error {
 	var role models.Role
 
 	if err := config.DB.First(&role, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	if err := c.BodyParser(&role); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err})
+		return c.Status(400).JSON(fiber.Map{"error": err})
 	}
 
 	if err := config.DB.Save(&role).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(role)
@@ -70,11 +70,11 @@ func DeleteRole(c *fiber.Ctx) error {
 	var role models.Role
 
 	if err := config.DB.First(&role, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(404).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	if err := config.DB.Delete(&role, id).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(role)
