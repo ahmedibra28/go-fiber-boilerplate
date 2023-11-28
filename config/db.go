@@ -23,7 +23,7 @@ func Connect() {
 		panic("Failed to connect database")
 	}
 
-	AutoMigrate(DB)
+	// AutoMigrate(DB)
 }
 
 func AutoMigrate(connection *gorm.DB) {

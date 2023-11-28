@@ -2,23 +2,30 @@ package models
 
 import (
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type Role struct {
-	gorm.Model
-	Name        string `json:"name" gorm:"not null;unique"`
-	Type        string `json:"type" gorm:"not null;unique"`
-	Description string `json:"description"`
+	ID        uint      `json:"id,omitempty" gorm:"primaryKey;autoIncrement"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
-	Users             []User             `json:"users" gorm:"foreignKey:RoleID"`
-	Permissions       []Permission       `json:"permissions" gorm:"many2many:role_permissions"`
-	ClientPermissions []ClientPermission `json:"client_permissions" gorm:"many2many:role_client_permissions"`
+	Name        string `json:"name,omitempty" gorm:"not null;unique;default:null"`
+	Type        string `json:"type,omitempty" gorm:"not null;unique;default:null"`
+	Description string `json:"description,omitempty"`
+
+	Users             []User             `json:"users,omitempty" gorm:"foreignKey:RoleID"`
+	Permissions       []Permission       `json:"permissions,omitempty" gorm:"many2many:role_permissions"`
+	ClientPermissions []ClientPermission `json:"client_permissions,omitempty" gorm:"many2many:role_client_permissions"`
 }
 
 func (r *Role) BeforeSave(tx *gorm.DB) (err error) {
-	r.Type = strings.ToUpper(r.Name)
+
+	var roleType = strings.ReplaceAll(r.Name, " ", "_")
+
+	r.Type = strings.ToUpper(roleType)
 
 	return nil
 }

@@ -1,14 +1,17 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 type ClientPermission struct {
-	gorm.Model
-	Name        string `json:"name" gorm:"not null"`
-	Sort        int    `json:"sort" gorm:"not null"`
-	Menu        string `json:"menu" gorm:"not null"`
-	Path        string `json:"path" gorm:"not null;unique"`
-	Description string `json:"description"`
+	ID        uint      `json:"id,omitempty" gorm:"primaryKey;autoIncrement"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
-	Roles []Role `json:"roles" gorm:"many2many:role_client_permissions"`
+	Name        string `json:"name,omitempty" gorm:"not null;default:null"`
+	Sort        int    `json:"sort,omitempty" gorm:"not null;default:null"`
+	Menu        string `json:"menu,omitempty" gorm:"not null;default:null"`
+	Path        string `json:"path,omitempty" gorm:"not null;unique;default:null"`
+	Description string `json:"description,omitempty"`
+
+	Roles []Role `json:"roles,omitempty" gorm:"many2many:role_client_permissions"`
 }

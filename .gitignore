@@ -7,3 +7,5 @@ config/database.json
 *.log 
 /temp 
 *.DS_Store 
+
+*.ts

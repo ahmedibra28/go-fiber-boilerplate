@@ -1,27 +1,35 @@
 package models
 
 import (
-	"errors"
+	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type Permission struct {
-	gorm.Model
-	Name        string `json:"name" gorm:"not null"`
-	Method      string `json:"method" gorm:"not null"`
-	Route       string `json:"route" gorm:"not null"`
-	Description string `json:"description"`
+	ID        uint      `json:"id,omitempty" gorm:"primaryKey;autoIncrement"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
-	Roles []Role `json:"roles" gorm:"many2many:role_permissions"`
+	Name        string `json:"name,omitempty" gorm:"not null;default:null"`
+	Method      string `json:"method,omitempty" gorm:"not null;default:null"`
+	Route       string `json:"route,omitempty" gorm:"not null;default:null"`
+	Description string `json:"description,omitempty"`
+
+	Roles []Role `json:"roles,omitempty" gorm:"many2many:role_permissions"`
 }
 
 func (p *Permission) BeforeSave(tx *gorm.DB) error {
-	var existing Permission
-	err := tx.Where("method = ? AND route = ? AND id != ?", p.Method, p.Route, p.ID).First(&existing).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil
+	var count int64
+	result := tx.Model(&Permission{}).Where("method = ? AND route = ? AND id <> ?", p.Method, p.Route, p.ID).Count(&count)
+	if result.Error != nil {
+		return result.Error
 	}
 
-	return err
+	if count > 0 {
+		return fmt.Errorf("method with route already exists")
+	}
+
+	return nil
 }

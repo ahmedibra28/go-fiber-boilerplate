@@ -1,26 +1,31 @@
 package models
 
 import (
+	"time"
+
 	"github.com/ahmedibra28/go-fiber-boilerplate/utils"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
-	Name                string `json:"name" gorm:"not null"`
-	Email               string `json:"email" gorm:"unique;not null"`
-	Image               string `json:"image"`
-	Mobile              string `json:"mobile"`
-	Address             string `json:"address"`
-	Bio                 string `json:"bio"`
-	Password            string `json:"password" gorm:"not null"`
-	Confirmed           bool   `json:"confirmed" default:"false"`
-	Blocked             bool   `json:"blocked" default:"false"`
-	ResetPasswordToken  string `json:"reset_password_token"`
-	ResetPasswordExpire int64  `json:"reset_password_expire"`
+	ID        uint      `json:"id,omitempty" gorm:"primaryKey;autoIncrement"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
-	Role   Role `json:"role" gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
-	RoleID uint `json:"role_id"`
+	Name                string `json:"name,omitempty" gorm:"not null;default:null"`
+	Email               string `json:"email,omitempty" gorm:"unique;not null;default:null"`
+	Image               string `json:"image,omitempty"`
+	Mobile              string `json:"mobile,omitempty"`
+	Address             string `json:"address,omitempty"`
+	Bio                 string `json:"bio,omitempty"`
+	Password            string `json:"password,omitempty" gorm:"not null;default:null"`
+	Confirmed           bool   `json:"confirmed,omitempty" default:"false"`
+	Blocked             bool   `json:"blocked,omitempty" default:"false"`
+	ResetPasswordToken  string `json:"reset_password_token,omitempty"`
+	ResetPasswordExpire int64  `json:"reset_password_expire,omitempty"`
+
+	Role   Role `json:"role,omitempty" gorm:"foreignKey:RoleID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	RoleID uint `json:"role_id,omitempty"`
 }
 
 func (u *User) BeforeSave(db *gorm.DB) error {
