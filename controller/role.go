@@ -16,6 +16,10 @@ func validate(role *models.Role) string {
 }
 
 func GetRoles(c *fiber.Ctx) error {
+
+	// get request user info from locals
+	// user := utils.GetUserInfo(c)
+
 	var roles = []models.Role{}
 
 	config.DB.Find(&roles)
